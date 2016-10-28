@@ -9,4 +9,6 @@ class Color(Enum):
     white = 4
     yellow = 5
 
+# Each colour contains cards with these numbers printed on them
+# (this also take into account frequency)
 numberFreq = [1, 1, 1, 2, 2, 3, 3, 4, 4, 5]
