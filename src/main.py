@@ -13,8 +13,13 @@ if __name__ == "__main__":
 
     # Create and register custom players
     geoPlayer1 = GeoPlayer()
+    geoPlayer2 = GeoPlayer()
 
     game.registerPlayer(geoPlayer1)
+    game.registerPlayer(geoPlayer2)
+
+    game.go()
+
 
 
 

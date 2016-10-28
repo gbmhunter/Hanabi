@@ -1,6 +1,7 @@
-from enum import Enum
+from enum import Enum, unique
 
 # Enumerates the allowed card colors in the Hanabi game
+@unique
 class Color(Enum):
     blue = 1
     green = 2

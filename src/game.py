@@ -7,3 +7,6 @@ class Game:
 
     def registerPlayer(self, player):
         print("registerPlayer() called.")
+
+    def go(self):
+        print("go() called.")
