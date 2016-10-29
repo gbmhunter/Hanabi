@@ -15,6 +15,7 @@ class Game:
 
         self.hands = []
 
+        self.livesRemaining = 3
 
         self.numTurns = 0
 
@@ -79,6 +80,30 @@ class Game:
 
             if isinstance(move, PlayCard):
                 print("Player has taken turn. Returned move is a PlayCard. playCard = " + repr(move))
+
+                # Try and play card
+                cardToPlay = self.hands[currPlayerIndex].cards[move.cardNumber]
+                wasAbleToPlay = self.playedPile.play(cardToPlay)
+
+                if wasAbleToPlay is True:
+                    print("Card was played successfully!")
+                    # We need to remove the card from the current players hand
+                    self.hands[currPlayerIndex].removeCardAndTopupFromDeck(cardToPlay)
+
+                else:
+                    print("Card was not able to be played.")
+
+                    # Card was not able to be played! We need to:
+                    # 1. Remove the card from the current players hand
+                    # 2. Add it to the discard pile
+                    # 3. Decrement the number of lives remaining
+                    self.hands[currPlayerIndex].removeCardAndTopupFromDeck(cardToPlay)
+                    self.discardPile.addCard(cardToPlay)
+                    self.livesRemaining -= 1
+
+                    if self.livesRemaining == 0:
+                        print("No lives remaining! Game is over. Score = " + str(self.playedPile.getCurrScore()))
+                        return
 
             # ============================================== #
             # =================== TIDY UP ================== #
