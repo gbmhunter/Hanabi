@@ -2,6 +2,7 @@ from deck import Deck
 from played_pile import PlayedPile
 from discard_pile import DiscardPile
 from hand import Hand
+from moves import *
 
 class Game:
 
@@ -47,8 +48,6 @@ class Game:
             # NOTE: We need to provide hands for all players EXCEPT his own
             # Make copy of hands array before modifying
             allHandsPutCurrPlayers = self.hands[:]
-            #allHandsPutCurrPlayers.append(self.hands[0 : currPlayerIndex]);
-            #allHandsPutCurrPlayers.append(self.hands[currPlayerIndex : len(self.hands)]);
 
             # Create map that will re-organise the players hands
             handMap = []
@@ -68,8 +67,23 @@ class Game:
 
             print("Re-organised allHandsPutCurrPlayers = " + repr(allHandsPutCurrPlayers))
 
-            # Make the current player take his turn
-            self.registeredPlayers[currPlayerIndex].takeTurn(self.hands, self.playedPile, self.discardPile)
+            # Make the current player take his/her turn, and record the move returned
+            move = self.registeredPlayers[currPlayerIndex].takeTurn(self.hands, self.playedPile, self.discardPile)
+
+            # ============================================== #
+            # ================= HANDLE MOVE ================ #
+            # ============================================== #
+
+            if move is None:
+                raise RuntimeError("takeTurn() did not return a move!")
+
+            if isinstance(move, PlayCard):
+                print("Player has taken turn. Returned move is a PlayCard. playCard = " + repr(move))
+
+            # ============================================== #
+            # =================== TIDY UP ================== #
+            # ============================================== #
+
             currPlayerIndex += 1
 
             # Cycle through all the players in a continuous loop

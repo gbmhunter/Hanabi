@@ -4,4 +4,5 @@ class PlayerInterface:
         print("New player being created.")
 
     def takeTurn(self, playersCards, playedPile, discardPile):
-        print("Player taking turn.")
+        raise NotImplementedError()
+
