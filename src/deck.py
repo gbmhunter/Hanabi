@@ -17,3 +17,9 @@ class Deck:
         random.shuffle(self.cards)
 
         print("Shuffled cards. self.cards = " + repr(self.cards))
+
+    # Removes and returns the top card from the deck
+    def takeCard(self):
+
+        # "Pop" the first card
+        return self.cards.pop(0)

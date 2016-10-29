@@ -3,5 +3,5 @@ class PlayerInterface:
     def __init__(self):
         print("New player being created.")
 
-    def takeTurn(self):
+    def takeTurn(self, playersCards, playedPile, discardPile):
         print("Player taking turn.")

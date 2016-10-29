@@ -1,6 +1,7 @@
 from deck import Deck
 from played_pile import PlayedPile
 from discard_pile import DiscardPile
+from hand import Hand
 
 class Game:
 
@@ -10,6 +11,8 @@ class Game:
         self.discardPile = DiscardPile()
 
         self.registeredPlayers = []
+
+        self.hands = []
         self.currPlayerIndex = 0
 
         self.numTurns = 0
@@ -28,13 +31,26 @@ class Game:
             print("ERROR: 2 or more players must be registered before go() can be called.")
             return
 
+        # Create a hand for each player
+        for players in self.registeredPlayers:
+            hand = Hand(self.deck)
+
+            self.hands.append(hand)
+
+            print("Created hand. hand = " + str(hand))
+
         while self.numTurns < 10:
-            self.registeredPlayers[self.currPlayerIndex].takeTurn()
+
+            # Make the current player take his turn
+            # NOTE: We need to provide hands for all players EXCEPT his own
+            self.registeredPlayers[self.currPlayerIndex].takeTurn(self.hands, self.playedPile, self.discardPile)
             self.currPlayerIndex += 1
 
+            # Cycle through all the players in a continuous loop
             if self.currPlayerIndex == len(self.registeredPlayers):
                 self.currPlayerIndex = 0
 
+            # Keep track of how many turns have been played this game
             self.numTurns += 1
 
 
