@@ -45,9 +45,28 @@ class Game:
 
 
             # NOTE: We need to provide hands for all players EXCEPT his own
-            allHandsPutCurrPLayers = []
-            allHandsPutCurrPLayers.append(self.hands[0 : currPlayerIndex]);
-            allHandsPutCurrPLayers.append(self.hands[currPlayerIndex : len(self.hands)]);
+            # Make copy of hands array before modifying
+            allHandsPutCurrPlayers = self.hands[:]
+            #allHandsPutCurrPlayers.append(self.hands[0 : currPlayerIndex]);
+            #allHandsPutCurrPlayers.append(self.hands[currPlayerIndex : len(self.hands)]);
+
+            # Create map that will re-organise the players hands
+            handMap = []
+            tempIndex = currPlayerIndex + 1
+            for players in self.registeredPlayers:
+                if(tempIndex > len(self.registeredPlayers) - 1):
+                    tempIndex = 0
+
+                if tempIndex == currPlayerIndex:
+                    continue
+
+                handMap.append(tempIndex)
+                tempIndex += 1
+
+            # Map created, now re-organise the players hands
+            allHandsPutCurrPlayers = [allHandsPutCurrPlayers[i] for i in handMap]
+
+            print("Re-organised allHandsPutCurrPlayers = " + repr(allHandsPutCurrPlayers))
 
             # Make the current player take his turn
             self.registeredPlayers[currPlayerIndex].takeTurn(self.hands, self.playedPile, self.discardPile)
