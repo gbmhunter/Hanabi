@@ -13,7 +13,7 @@ class Game:
         self.registeredPlayers = []
 
         self.hands = []
-        self.currPlayerIndex = 0
+
 
         self.numTurns = 0
 
@@ -26,6 +26,8 @@ class Game:
     def go(self):
         print("go() called.")
 
+        currPlayerIndex = 0
+
         # The game doesn't make sense if there are not 2 or more players...
         if len(self.registeredPlayers) < 2:
             print("ERROR: 2 or more players must be registered before go() can be called.")
@@ -37,18 +39,23 @@ class Game:
 
             self.hands.append(hand)
 
-            print("Created hand. hand = " + str(hand))
+            print("Created hand. hand = " + repr(hand))
 
         while self.numTurns < 10:
 
-            # Make the current player take his turn
+
             # NOTE: We need to provide hands for all players EXCEPT his own
-            self.registeredPlayers[self.currPlayerIndex].takeTurn(self.hands, self.playedPile, self.discardPile)
-            self.currPlayerIndex += 1
+            allHandsPutCurrPLayers = []
+            allHandsPutCurrPLayers.append(self.hands[0 : currPlayerIndex]);
+            allHandsPutCurrPLayers.append(self.hands[currPlayerIndex : len(self.hands)]);
+
+            # Make the current player take his turn
+            self.registeredPlayers[currPlayerIndex].takeTurn(self.hands, self.playedPile, self.discardPile)
+            currPlayerIndex += 1
 
             # Cycle through all the players in a continuous loop
-            if self.currPlayerIndex == len(self.registeredPlayers):
-                self.currPlayerIndex = 0
+            if currPlayerIndex == len(self.registeredPlayers):
+                currPlayerIndex = 0
 
             # Keep track of how many turns have been played this game
             self.numTurns += 1
