@@ -18,10 +18,12 @@ class PlayCard(Move):
         self.cardNumber = cardNumber
 
     def __repr__(self):
-        return "{ cardNumber = %s }" % (self.cardNumber)
+        return "{ card = %s }" % repr(self.cardNumber)
 
 
 class Discard(Move):
-    def __init__(self, player):
+    def __init__(self, player, cardNumber):
         super().__init__(player)
         print("\"Discard\" move being created.")
+
+        self.cardNumber = cardNumber
