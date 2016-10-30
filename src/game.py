@@ -5,6 +5,8 @@ from played_pile import PlayedPile
 from discard_pile import DiscardPile
 from hand import Hand
 from moves import *
+from inspector import Inspector
+from game_constants import *
 
 class Game:
 
@@ -17,13 +19,16 @@ class Game:
         self.discardPile = DiscardPile()
 
         self.registeredPlayers = []
+        self.currPlayer = None
 
-        self.cluesRemaining = 8
+        self.numCluesAvailable = 8
         self.livesRemaining = 3
 
         self.moveHistory = []
 
         self.numTurns = 0
+
+        self.inspector = Inspector(self)
 
     def registerPlayer(self, player):
         print("registerPlayer() called.")
@@ -44,16 +49,16 @@ class Game:
         # Create a hand for each player
         for player in self.registeredPlayers:
             #hand = Hand(self.deck)
-            player.hand = Hand(self.remainingDeck)
+            player.hand = Hand(self.remainingDeck, self)
 
             ##self.hands[player] = hand
 
             print("Created hand. hand = " + repr(player.hand))
 
         # Main loop. Each iteration of this loop handles a single move.
-        while self.numTurns < 10:
+        while True:
 
-            currPlayer = self.registeredPlayers[currPlayerIndex]
+            self.currPlayer = self.registeredPlayers[currPlayerIndex]
 
 
             # NOTE: We need to provide hands for all players EXCEPT his own
@@ -79,7 +84,7 @@ class Game:
             # print("Re-organised allHandsPutCurrPlayers = " + repr(allHandsPutCurrPlayers))
 
             # Make the current player take his/her turn, and record the move returned
-            move = self.registeredPlayers[currPlayerIndex].takeTurn(self.registeredPlayers, self.playedPile, self.discardPile)
+            move = self.registeredPlayers[currPlayerIndex].takeTurn(self.registeredPlayers, self.playedPile, self.discardPile, self.numCluesAvailable, self.inspector)
 
             # ============================================== #
             # ================= HANDLE MOVE ================ #
@@ -89,20 +94,20 @@ class Game:
                 raise RuntimeError("takeTurn() did not return a move!")
 
             if isinstance(move, GiveClueMove):
-                self.handeGiveClue(currPlayer, move)
+                self.handeGiveClue(self.currPlayer, move)
 
 
             elif isinstance(move, PlayCard):
 
-                self.handlePlayCard(currPlayer, move)
+                self.handlePlayCard(self.currPlayer, move)
 
                 if self.livesRemaining == 0:
                     print("No lives remaining! Game is over. Score = " + str(self.playedPile.getCurrScore()))
                     return
-            elif isinstance(move, Discard):
+            elif isinstance(move, DiscardMove):
                 print("Player has taken turn. Returned move is a Discard. move = " + repr(move))
 
-                self.handleDiscard(currPlayer, move)
+                self.handleDiscard(self.currPlayer, move)
 
 
 
@@ -119,6 +124,9 @@ class Game:
             # Keep track of how many turns have been played this game
             self.numTurns += 1
 
+            if self.numTurns == 1000:
+                raise RuntimeError("Players took 1000 turns and game has not finished.")
+
 
     def handeGiveClue(self, currPlayer, giveClueMove):
         print("Player has taken turn. Returned move is a GiveClueMove. playCard = " + repr(giveClueMove))
@@ -130,7 +138,7 @@ class Game:
         # 4. Add move to move history
 
         # VALIDATE LEGALITY
-        if self.cluesRemaining == 0:
+        if self.numCluesAvailable == 0:
             raise RuntimeError("Player tried to give clue when no more clues were available.")
 
         # FIND NUMBER OF APPLICABLE CARDS
@@ -145,7 +153,7 @@ class Game:
             giveClueMove.cardUids = cardUids
 
 
-        self.cluesRemaining -= 1
+        self.numCluesAvailable -= 1
         self.moveHistory.append(giveClueMove)
 
 
@@ -178,8 +186,10 @@ class Game:
 
     def handleDiscard(self, currPlayer, discardMove):
         # We need to
+        # 1. Check card is in current players hand
         # 1. Remove card from current players hand
         # 2. Add it to the discard pile
+        # 4. Increase the number of clues available
 
         # Validate legality
         if not currPlayer.hand.isInHand(discardMove.cardUid):
@@ -187,6 +197,10 @@ class Game:
 
         currPlayer.hand.removeCardAndTopupFromDeck(discardMove.cardUid, self.remainingDeck)
         self.discardPile.addCard(discardMove.cardUid)
+
+        if self.numCluesAvailable < 8:
+            self.numCluesAvailable += 1
+
 
     def getCardUidsOfColor(self, color, hand, deck):
 
@@ -198,4 +212,7 @@ class Game:
                 cardUids.append(cardUid)
 
         return cardUids
+
+
+
 

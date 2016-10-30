@@ -12,7 +12,10 @@ class PlayedPile:
         print("Created played pile. Played pile = " + repr(self.playedPile))
 
     # Use this to check is a particular card is playable on the played pile.
-    def isPlayable(self, card):
+    def isPlayable(self, cardUid, deck):
+
+        # Get card info
+        card = deck.getCard(cardUid)
 
         if card.number == self.playedPile[card.color] + 1:
             return True
