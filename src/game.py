@@ -171,12 +171,17 @@ class Game:
             raise RuntimeError("Player tried to play card that was not in his/her hand.")
 
         # Try and play card
-        wasAbleToPlay = self.playedPile.play(playCardMove.cardUid, self.deck)
+        ableToBePlayed, completedPile = self.playedPile.play(playCardMove.cardUid, self.deck)
 
-        if wasAbleToPlay is True:
+        if ableToBePlayed is True:
             # print("Card was played successfully!")
-            # We need to remove the card from the current players hand
+            # Card was played successfully
             currPlayer.hand.removeCardAndTopupFromDeck(playCardMove.cardUid, self.remainingDeck)
+
+            # If playing this card completed a pile (i.e. a 5 was played),
+            # then give a clue back
+            if completedPile and self.numCluesAvailable < 8:
+                self.numCluesAvailable += 1
 
         else:
             # print("Card was not able to be played.")

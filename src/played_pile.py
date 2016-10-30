@@ -29,11 +29,17 @@ class PlayedPile:
         # Get card info
         card = deck.getCard(cardUid)
 
+        ableToBePlayed = False
+        completedPile = False
+
         if card.number == self.playedPile[card.color] + 1:
             self.playedPile[card.color] += 1
-            return True
-        else:
-            return False
+            ableToBePlayed = True
+
+            if self.playedPile[card.color] == 5:
+                completedPile = True
+
+        return ableToBePlayed, completedPile
 
     def getCurrScore(self):
         currScore = 0
