@@ -12,11 +12,14 @@ class GiveClueMove(Move):
         self.targetPlayer = targetPlayer
         self.numOrColor = numOrColor
 
+        # This is populated by the Game object
+        self.cardUids = None
+
     def __repr__(self):
         return "{ targetPlayer = %s, numOrColor = %s }" % (repr(self.targetPlayer), repr(self.numOrColor))
 
 
-class PlayCard(Move):
+class PlayCardMove(Move):
     def __init__(self, cardUid):
         super().__init__()
         # print("\"Play Card\" move being created.")

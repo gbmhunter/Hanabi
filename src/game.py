@@ -60,31 +60,18 @@ class Game:
 
             self.currPlayer = self.registeredPlayers[currPlayerIndex]
 
-
-            # NOTE: We need to provide hands for all players EXCEPT his own
-            # Make copy of hands array before modifying
-            # allHandsPutCurrPlayers = self.hands[:]
-            #
-            # # Create map that will re-organise the players hands
-            # handMap = []
-            # tempIndex = currPlayerIndex + 1
-            # for player in self.registeredPlayers:
-            #     if(tempIndex > len(self.registeredPlayers) - 1):
-            #         tempIndex = 0
-            #
-            #     if player == currPlayer:
-            #         continue
-            #
-            #     handMap.append(tempIndex)
-            #     tempIndex += 1
-            #
-            # # Map created, now re-organise the players hands
-            # allHandsPutCurrPlayers = [allHandsPutCurrPlayers[i] for i in handMap]
-            #
-            # print("Re-organised allHandsPutCurrPlayers = " + repr(allHandsPutCurrPlayers))
+            if self.checkForNoMoveAvailable():
+                print("No move available for current player!. Game over. Score = " + str(self.playedPile.getCurrScore()))
+                return
 
             # Make the current player take his/her turn, and record the move returned
-            move = self.registeredPlayers[currPlayerIndex].takeTurn(self.registeredPlayers, self.playedPile, self.discardPile, self.numCluesAvailable, self.inspector)
+            move = self.registeredPlayers[currPlayerIndex].takeTurn(
+                self.registeredPlayers,
+                self.playedPile,
+                self.discardPile,
+                self.moveHistory,
+                self.numCluesAvailable,
+                self.inspector)
 
             # ============================================== #
             # ================= HANDLE MOVE ================ #
@@ -95,15 +82,15 @@ class Game:
 
             if isinstance(move, GiveClueMove):
                 self.handeGiveClue(self.currPlayer, move)
+                if self.checkForEndOfGame() == True:
+                    return
 
-
-            elif isinstance(move, PlayCard):
+            elif isinstance(move, PlayCardMove):
 
                 self.handlePlayCard(self.currPlayer, move)
-
-                if self.livesRemaining == 0:
-                    print("No lives remaining! Game is over. Score = " + str(self.playedPile.getCurrScore()))
+                if self.checkForEndOfGame() == True:
                     return
+
             elif isinstance(move, DiscardMove):
                 print("Player has taken turn. Returned move is a Discard. move = " + repr(move))
 
@@ -141,8 +128,26 @@ class Game:
         if self.numCluesAvailable == 0:
             raise RuntimeError("Player tried to give clue when no more clues were available.")
 
+            # Find all card UIDs of this color in target players hand
+            cardUids = self.getCardUidsOfNumber(giveClueMove.numOrColor, giveClueMove.targetPlayer.hand, self.deck)
+
+            print("Searched for cards with particular color in target players hand. cardUids = " + repr(cardUids))
+
+            giveClueMove.cardUids = cardUids
+
+
         # FIND NUMBER OF APPLICABLE CARDS
-        if isinstance(giveClueMove.numOrColor, Color):
+        if isinstance(giveClueMove.numOrColor, int):
+            print("Clue was about a number. number = " + repr(giveClueMove.numOrColor))
+
+            # Find all card UIDs of this color in target players hand
+            cardUids = self.getCardUidsOfNumber(giveClueMove.numOrColor, giveClueMove.targetPlayer.hand, self.deck)
+
+            print("Searched for cards with particular color in target players hand. cardUids = " + repr(cardUids))
+
+            giveClueMove.cardUids = cardUids
+
+        elif isinstance(giveClueMove.numOrColor, Color):
             print("Clue was about color. color = " + repr(giveClueMove.numOrColor))
 
             # Find all card UIDs of this color in target players hand
@@ -151,7 +156,8 @@ class Game:
             print("Searched for cards with particular color in target players hand. cardUids = " + repr(cardUids))
 
             giveClueMove.cardUids = cardUids
-
+        else:
+            raise RuntimeError("Clue type was not recognised.")
 
         self.numCluesAvailable -= 1
         self.moveHistory.append(giveClueMove)
@@ -212,6 +218,43 @@ class Game:
                 cardUids.append(cardUid)
 
         return cardUids
+
+    def getCardUidsOfNumber(self, number, hand, deck):
+
+        cardUids = []
+        for cardUid in hand.cardUids:
+            card = deck.getCard(cardUid)
+
+            if card.number == number:
+                cardUids.append(cardUid)
+
+        return cardUids
+
+    def checkForEndOfGame(self):
+
+        gameIsOver = False
+        if self.livesRemaining == 0:
+            print("No lives remaining!")
+            gameIsOver = True
+
+        # Check for completion of played pile
+        if self.playedPile.getCurrScore == 25:
+            print("Your bots scored 25 points!")
+            gameIsOver = True
+
+        if gameIsOver == True:
+            print("Game is over. Your bots scored " + str(self.playedPile.getCurrScore()) + " points.")
+
+        return gameIsOver
+
+    def checkForNoMoveAvailable(self):
+
+        if len(self.currPlayer.hand.cardUids) == 0 and self.numCluesAvailable == 0:
+            return True
+        else:
+            return False
+
+
 
 
 
