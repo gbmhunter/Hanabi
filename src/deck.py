@@ -7,7 +7,7 @@ from card import Card
 class Deck:
     def __init__(self):
         # Create a deck of cards in random order
-        print("Creating deck...")
+        # print("Creating deck...")
         self.cards = []
 
         uniqueId = 0
@@ -18,7 +18,7 @@ class Deck:
 
         random.shuffle(self.cards)
 
-        print("Shuffled cards. self.cards = " + repr(self.cards))
+        # print("Shuffled cards. self.cards = " + repr(self.cards))
 
     # Removes and returns the top card from the deck
     def takeCard(self):

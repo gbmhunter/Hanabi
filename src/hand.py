@@ -32,4 +32,4 @@ class Hand:
         if len(remainingDeck.cards) != 0:
             self.cardUids.insert(0, remainingDeck.takeCard())
 
-        print("Removed a card and took a new one from deck (if possible). self.cardUids now = " + repr(self.cardUids))
+        # print("Removed a card and took a new one from deck (if possible). self.cardUids now = " + repr(self.cardUids))

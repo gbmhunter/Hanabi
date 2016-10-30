@@ -31,13 +31,13 @@ class Game:
         self.inspector = Inspector(self)
 
     def registerPlayer(self, player):
-        print("registerPlayer() called.")
+        # print("registerPlayer() called.")
 
         # Add this player to the list
         self.registeredPlayers.append(player)
 
     def go(self):
-        print("go() called.")
+        # print("go() called.")
 
         currPlayerIndex = 0
 
@@ -53,7 +53,7 @@ class Game:
 
             ##self.hands[player] = hand
 
-            print("Created hand. hand = " + repr(player.hand))
+            # print("Created hand. hand = " + repr(player.hand))
 
         # Main loop. Each iteration of this loop handles a single move.
         while True:
@@ -61,7 +61,7 @@ class Game:
             self.currPlayer = self.registeredPlayers[currPlayerIndex]
 
             if self.checkForNoMoveAvailable():
-                print("No move available for current player!. Game over. Score = " + str(self.playedPile.getCurrScore()))
+                # print("No move available for current player!. Game over. Score = " + str(self.playedPile.getCurrScore()))
                 return
 
             # Make the current player take his/her turn, and record the move returned
@@ -92,7 +92,7 @@ class Game:
                     return
 
             elif isinstance(move, DiscardMove):
-                print("Player has taken turn. Returned move is a Discard. move = " + repr(move))
+                # print("Player has taken turn. Returned move is a Discard. move = " + repr(move))
 
                 self.handleDiscard(self.currPlayer, move)
 
@@ -116,7 +116,7 @@ class Game:
 
 
     def handeGiveClue(self, currPlayer, giveClueMove):
-        print("Player has taken turn. Returned move is a GiveClueMove. playCard = " + repr(giveClueMove))
+        # print("Player has taken turn. Returned move is a GiveClueMove. playCard = " + repr(giveClueMove))
 
         # We need to:
         # 1. Validate legality of move
@@ -131,29 +131,29 @@ class Game:
             # Find all card UIDs of this color in target players hand
             cardUids = self.getCardUidsOfNumber(giveClueMove.numOrColor, giveClueMove.targetPlayer.hand, self.deck)
 
-            print("Searched for cards with particular color in target players hand. cardUids = " + repr(cardUids))
+            # print("Searched for cards with particular color in target players hand. cardUids = " + repr(cardUids))
 
             giveClueMove.cardUids = cardUids
 
 
         # FIND NUMBER OF APPLICABLE CARDS
         if isinstance(giveClueMove.numOrColor, int):
-            print("Clue was about a number. number = " + repr(giveClueMove.numOrColor))
+            # print("Clue was about a number. number = " + repr(giveClueMove.numOrColor))
 
             # Find all card UIDs of this color in target players hand
             cardUids = self.getCardUidsOfNumber(giveClueMove.numOrColor, giveClueMove.targetPlayer.hand, self.deck)
 
-            print("Searched for cards with particular color in target players hand. cardUids = " + repr(cardUids))
+            # print("Searched for cards with particular color in target players hand. cardUids = " + repr(cardUids))
 
             giveClueMove.cardUids = cardUids
 
         elif isinstance(giveClueMove.numOrColor, Color):
-            print("Clue was about color. color = " + repr(giveClueMove.numOrColor))
+            # print("Clue was about color. color = " + repr(giveClueMove.numOrColor))
 
             # Find all card UIDs of this color in target players hand
             cardUids = self.getCardUidsOfColor(giveClueMove.numOrColor, giveClueMove.targetPlayer.hand, self.deck)
 
-            print("Searched for cards with particular color in target players hand. cardUids = " + repr(cardUids))
+            # print("Searched for cards with particular color in target players hand. cardUids = " + repr(cardUids))
 
             giveClueMove.cardUids = cardUids
         else:
@@ -164,7 +164,7 @@ class Game:
 
 
     def handlePlayCard(self, currPlayer, playCardMove):
-        print("Player has taken turn. Returned move is a PlayCard. playCard = " + repr(playCardMove))
+        # print("Player has taken turn. Returned move is a PlayCard. playCard = " + repr(playCardMove))
 
         # Validate legality
         if not currPlayer.hand.isInHand(playCardMove.cardUid):
@@ -174,12 +174,12 @@ class Game:
         wasAbleToPlay = self.playedPile.play(playCardMove.cardUid, self.deck)
 
         if wasAbleToPlay is True:
-            print("Card was played successfully!")
+            # print("Card was played successfully!")
             # We need to remove the card from the current players hand
             currPlayer.hand.removeCardAndTopupFromDeck(playCardMove.cardUid, self.remainingDeck)
 
         else:
-            print("Card was not able to be played.")
+            # print("Card was not able to be played.")
 
             # Card was not able to be played! We need to:
             # 1. Remove the card from the current players hand
@@ -234,16 +234,16 @@ class Game:
 
         gameIsOver = False
         if self.livesRemaining == 0:
-            print("No lives remaining!")
+            # print("No lives remaining!")
             gameIsOver = True
 
         # Check for completion of played pile
         if self.playedPile.getCurrScore == 25:
-            print("Your bots scored 25 points!")
+            # print("Your bots scored 25 points!")
             gameIsOver = True
 
-        if gameIsOver == True:
-            print("Game is over. Your bots scored " + str(self.playedPile.getCurrScore()) + " points.")
+        # if gameIsOver == True:
+            # print("Game is over. Your bots scored " + str(self.playedPile.getCurrScore()) + " points.")
 
         return gameIsOver
 
@@ -253,6 +253,10 @@ class Game:
             return True
         else:
             return False
+
+    def getScore(self):
+
+        return self.playedPile.getCurrScore()
 
 
 

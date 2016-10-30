@@ -1,6 +1,8 @@
 class Move:
     def __init__(self):
-        print("New move being created.")
+        # print("New move being created.")
+
+        blah = 2
 
 
 

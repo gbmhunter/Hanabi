@@ -3,7 +3,7 @@
 class Inspector:
 
     def __init__(self, game):
-        print("Creating inspector.")
+        # print("Creating inspector.")
         self.game = game
 
 

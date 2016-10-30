@@ -3,13 +3,13 @@ from game_constants import Color
 class PlayedPile:
     def __init__(self):
         # Create played pile
-        print("Creating played pile...")
+        # print("Creating played pile...")
         self.playedPile = {}
 
         for color in Color:
             self.playedPile[color] = 0
 
-        print("Created played pile. Played pile = " + repr(self.playedPile))
+        # print("Created played pile. Played pile = " + repr(self.playedPile))
 
     # Use this to check is a particular card is playable on the played pile.
     def isPlayable(self, cardUid, deck):
@@ -24,7 +24,7 @@ class PlayedPile:
 
     # Plays the provided card onto the played pile, is possible.
     def play(self, cardUid, deck):
-        print("PlayedPile.play() called with cardUid = " + repr(cardUid))
+        # print("PlayedPile.play() called with cardUid = " + repr(cardUid))
 
         # Get card info
         card = deck.getCard(cardUid)
