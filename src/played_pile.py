@@ -20,8 +20,12 @@ class PlayedPile:
             return False
 
     # Plays the provided card onto the played pile, is possible.
-    def play(self, card):
-        print("PlayedPile.play() called with card = " + repr(card))
+    def play(self, cardUid, deck):
+        print("PlayedPile.play() called with cardUid = " + repr(cardUid))
+
+        # Get card info
+        card = deck.getCard(cardUid)
+
         if card.number == self.playedPile[card.color] + 1:
             self.playedPile[card.color] += 1
             return True

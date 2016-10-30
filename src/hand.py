@@ -3,26 +3,38 @@ class Hand:
     # Create a new hand, populating it with 5 cards from the deck
     def __init__(self, deck):
         print("New hand being created.")
-
-        self.deck = deck
-        self.cards = []
+        self.cardUids = []
 
         # Populate this hand with 5 cards from the deck
         for num in range(0, 5):
-            self.cards.append(deck.takeCard())
+            self.cardUids.append(deck.takeCard())
+
+    def isInHand(self, cardUid):
+
+        foundCard = False
+        for cardUidInHand in self.cardUids:
+            if cardUidInHand == cardUid:
+                foundCard = True
+                break
+
+        return foundCard
+
 
     # Removes the provided card from this hand and replaces it
     # with a fresh card from the deck
-    def removeCardAndTopupFromDeck(self, cardToRemove):
-        self.cards.remove(cardToRemove)
+    def removeCardAndTopupFromDeck(self, cardUidToRemove, remainingDeck):
+        self.cardUids.remove(cardUidToRemove)
 
-        print("Removed a card. self.cards now = " + repr(self.cards))
+        print("Removed a card. self.cardUids now = " + repr(self.cardUids))
 
         # Insert a new card from the deck at position 0
         # (only if there are still cards left in the deck)
-        if len(self.deck.cards) != 0:
-            self.cards.insert(0, self.deck.takeCard())
+        if len(remainingDeck.cards) != 0:
+            self.cardUids.insert(0, remainingDeck.takeCard())
+
+
+
 
 
     def __repr__(self):
-        return "{ cards = %s }" % (self.cards)
+        return "{ cards = %s }" % (self.cardUids)

@@ -10,7 +10,7 @@ class GeoPlayer(PlayerInterface):
     def takeTurn(self, playersCards, playedPile, discardPile):
         print("GeoPlayer taking turn.")
 
-        return PlayCard(self, 0)
+        return PlayCard(self, self.hand.cardUids[0])
 
 
 if __name__ == "__main__":

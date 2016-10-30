@@ -1,8 +1,8 @@
 class DiscardPile:
     def __init__(self):
         print("Creating discard pile...")
-        self.cards = []
+        self.cardUids = []
 
-    def addCard(self, card):
-        print("DiscardPile.addCard() called with card = " + repr(card))
-        self.cards.append(card)
+    def addCard(self, cardUid):
+        print("DiscardPile.addCard() called with cardUid = " + repr(cardUid))
+        self.cardUids.append(cardUid)
